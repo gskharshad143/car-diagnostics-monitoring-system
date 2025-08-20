@@ -1,5 +1,6 @@
 """
-GarageMonitor module for monitoring multiple cars.
+@file garage_monitor.py
+@brief GarageMonitor module for monitoring multiple cars.
 """
 
 import csv
@@ -11,40 +12,24 @@ from diagnostic import Diagnostic
 
 
 class GarageMonitor:
-    """Monitors a fleet of cars using diagnostic data."""
+    """
+    @class GarageMonitor
+    @brief Monitors a fleet of cars using diagnostic data.
+    """
 
     def __init__(self, csv_path: str) -> None:
+        """
+        @brief Constructor for GarageMonitor class.
+        @param csv_path Path to diagnostics CSV file.
+        """
         self.csv_path = csv_path
         self.cars: List[Car] = []
         self.lock = threading.Lock()
-    def simulate_real_time_updates(self, update_count=5, delay=0.05):
-        """
-        Simulates real-time updates to diagnostics for each car using threads.
-        Each thread randomly updates RPM, Engine Load, and Coolant Temp for a car.
-        """
-        threads = []
-        for car in self.cars:
-            t = threading.Thread(target=self._update_car_diagnostics, args=(car, update_count, delay))
-            threads.append(t)
-            t.start()
-        for t in threads:
-            t.join()
-
-    def _update_car_diagnostics(self, car, update_count, delay):
-        import random
-        for _ in range(update_count):
-            with self.lock:
-                # Simulate small random changes
-                if car.diagnostic.rpm is not None:
-                    car.diagnostic.rpm += random.randint(-10, 10)
-                if car.diagnostic.load is not None:
-                    car.diagnostic.load += random.uniform(-0.5, 0.5)
-                if car.diagnostic.temp is not None:
-                    car.diagnostic.temp += random.uniform(-0.2, 0.2)
-            time.sleep(delay)
 
     def load_diagnostics(self) -> None:
-        """Loads diagnostics from a CSV file with validation and error handling."""
+        """
+        @brief Loads diagnostics from a CSV file with validation and error handling.
+        """
         car_dict = {}
         try:
             with open(self.csv_path, newline='') as csvfile:
@@ -77,8 +62,43 @@ class GarageMonitor:
             print(f"Error reading CSV: {e}")
             raise
 
+    def simulate_real_time_updates(self, update_count=5, delay=0.05):
+        """
+        @brief Simulates real-time updates to diagnostics for each car using threads.
+        @param update_count Number of updates per car.
+        @param delay Delay between updates in seconds.
+        """
+        threads = []
+        for car in self.cars:
+            t = threading.Thread(target=self._update_car_diagnostics, args=(car, update_count, delay))
+            threads.append(t)
+            t.start()
+        for t in threads:
+            t.join()
+
+    def _update_car_diagnostics(self, car, update_count, delay):
+        """
+        @brief Internal method to update car diagnostics in a thread.
+        @param car Car object to update.
+        @param update_count Number of updates.
+        @param delay Delay between updates in seconds.
+        """
+        import random
+        for _ in range(update_count):
+            with self.lock:
+                # Simulate small random changes
+                if car.diagnostic.rpm is not None:
+                    car.diagnostic.rpm += random.randint(-10, 10)
+                if car.diagnostic.load is not None:
+                    car.diagnostic.load += random.uniform(-0.5, 0.5)
+                if car.diagnostic.temp is not None:
+                    car.diagnostic.temp += random.uniform(-0.2, 0.2)
+            time.sleep(delay)
+
     def monitor(self) -> None:
-        """Prints each car's diagnostics in the required format. Uses lock for safe aggregation."""
+        """
+        @brief Prints each car's diagnostics in the required format. Uses lock for safe aggregation.
+        """
         for car in self.cars:
             with self.lock:
                 score = car.compute_score()

@@ -1,7 +1,7 @@
 
 """
-main.py
-Main script for reading diagnostics from CSV and processing cars.
+@file main.py
+@brief Main script for reading diagnostics from CSV and processing cars.
 
 Example CSV format:
 CarID,DiagnosticType,Value
@@ -27,7 +27,9 @@ import time
 from garage_monitor import GarageMonitor
 
 def main() -> None:
-    """Runs the garage monitor in both single-threaded and multi-threaded modes."""
+    """
+    @brief Runs the garage monitor in both single-threaded and multi-threaded modes.
+    """
     monitor = GarageMonitor('diagnostics.csv')
     monitor.load_diagnostics()
 

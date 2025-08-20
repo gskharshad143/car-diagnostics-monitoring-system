@@ -1,0 +1,7 @@
+CarID,DiagnosticType,Value
+CAR001,RPM,3200
+CAR001,Engine Load,75
+CAR001,Coolant Temperature,95
+CAR002,RPM,4000
+CAR002,Engine Load,90
+CAR002,Coolant Temperature,110
